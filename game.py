@@ -1,11 +1,11 @@
 import pygame
 import sys
 from player import GameBot
+from objects import Object
 
 class Game:
     # Constants
-    START_X, START_Y = 24, 24
-    SPACING = 50
+    START_X, START_Y = 823, 178
     BACKGROUND_COLOR = (0, 0, 0)
 
     def __init__(self):
@@ -15,60 +15,29 @@ class Game:
         pygame.init()
         self.clock = pygame.time.Clock()
         self.dt = 0
-        self.ghost_timer = 8000
 
-        # Paths
-        self.txt_grid = []
-        self.grid = []
+        # Initializing images
+        self.background = pygame.image.load("images/background.png")
+        self.brush_img = pygame.image.load("images/brush.png")
 
-        # sprites
-        self.blocks = pygame.sprite.Group()
-        self.mango = None
-
-        # Load the game level and available paths
-        self.load_level(3)
-
-        self.HEIGHT = len(self.txt_grid) * self.SPACING
-        self.WIDTH = len(self.txt_grid[0]) * self.SPACING
+        # Sprites
+        self.objects = pygame.sprite.Group()
+        self.brush = Object(self, self.brush_img, 50, 50)
+        self.objects.add(self.brush)
+        self.player = GameBot(self)
 
         # Create the game window
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("Mango FSM")
-
-    def load_level(self, maze_number=1):
-        filepath = "assets/mazes/maze" + str(maze_number) + ".txt"
-        row = 0
-        with open(filepath, "r") as file:
-            line = file.readline().strip()
-            while line:
-                txt_row = []
-                for col in range(len(line)):
-                    pos_x = self.START_X + (self.SPACING * col)
-                    pos_y = self.START_Y + (self.SPACING * row)
-                    txt_row.append(line[col])
-                    if line[col] == '#':
-                        self.blocks.add(Block(pos_x, pos_y))
-                    elif line[col] == 'X':
-                        self.blocks.add(Block(pos_x, pos_y, Block.BRICK))
-                    elif line[col] == '$':
-                        self.blocks.add(Block(pos_x, pos_y, Block.MONEY))
-                    elif line[col] == 'B':
-                        self.blocks.add(Block(pos_x, pos_y, Block.BOOSTER))
-                    elif line[col] == 'M':
-                        self.mango = MazeBot(self, pos_x, pos_y)
-
-                self.txt_grid.append(txt_row)
-                line = file.readline()
-                row += 1
+        self.screen = pygame.display.set_mode((960, 540))
+        pygame.display.set_caption("Get Ready Game")
 
     def run(self):
         # Main game loop
         running = True
 
         # Draw the initial screen
-        self.screen.fill(self.BACKGROUND_COLOR)
-        self.blocks.draw(self.screen)
-        self.mango.draw(self.screen)
+        self.screen.blit(self.background, (0, 0)) 
+        self.objects.draw(self.screen)
+        self.player.draw(self.screen)
         
         while running:
             # Set fps to 120
@@ -80,15 +49,18 @@ class Game:
                     running = False
                     # clicking should go here
             
-            # Only update every 120 fps
-            if self.dt > 120:
+            # If the player is in action and collides with brush, state should change and timer should be set to zero
+            if self.player.game.get_state() == "ia" and self.player.colliderect(self.brush):
                 self.dt = 0
-                self.mango.update()
+                self.player.update("reached item")
+            
+            elif self.player.game.get_state() == "bh" and self.dt > 8000:
+                self.player.update("action complete")
 
-                # Draw to the screen
-                self.screen.fill(self.BACKGROUND_COLOR)
-                self.blocks.draw(self.screen)
-                self.mango.draw(self.screen)
+            # Draw to the screen
+            self.screen.blit(self.background, (0, 0)) 
+            self.objects.draw(self.screen)
+            self.player.draw(self.screen)
 
             # Update the display
             pygame.display.flip()
@@ -98,7 +70,7 @@ class Game:
         sys.exit()
 
 if __name__ == "__main__":
-    pm = MangoGame()
-    pm.run()
+    game = Game()
+    game.run()
 
 # look at clicking and how to know if a sprite has been clicked in pygame

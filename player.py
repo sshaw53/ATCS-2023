@@ -3,7 +3,7 @@ from fsm import FSM
 
 class GameBot(pygame.sprite.Sprite):
     # States
-    NEUTRAL, IN_ACTION, WALKING, WON, LOST, BRUSHING_HAIR = "n", "ia", "wa", "wo", "l" "bh"
+    NEUTRAL, IN_ACTION, WALKING, WON, LOST, BRUSHING_HAIR = "n", "ia", "wa", "wo", "l", "bh"
 
     def __init__(self, game, x=50, y=50):
         super().__init__()
@@ -26,7 +26,7 @@ class GameBot(pygame.sprite.Sprite):
     
     def init_fsm(self):
         # Add more here for the other states with actions
-        self.fsm.add_transition("action complete", self.BRUSHING_HAIR, self.reset, self.NEUTRAL)
+        self.fsm.add_transition("action complete", self.BRUSHING_HAIR, None, self.NEUTRAL)
         
         #TODO: implement lose + win (in game function), and brushing hair (tbd)
         self.fsm.add_transition("time's up", self.NEUTRAL, self.lose, self.LOST)
@@ -51,9 +51,12 @@ class GameBot(pygame.sprite.Sprite):
             self.rect.centery += 5
         elif self.rect.centery >= y:
             self.rect.centery -= 5
+
+    def brush_hair():
+        # let time pass
+        pass
      
     def update(self, input = None):
-        # TODO: Use the finite state machine to process input
         self.fsm.process(input)
         # make sure to change image based on different conditions
     
