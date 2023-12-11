@@ -13,6 +13,8 @@ class GameBot(pygame.sprite.Sprite):
         # Load initial image
         self.image = pygame.image.load("images/neutral_girl.png")
         self.rect = self.image.get_rect()
+        self.image = pygame.transform.scale(self.image, (110, 180))
+
 
         # Set rectangle
         self.width = self.image.get_width()
@@ -41,22 +43,30 @@ class GameBot(pygame.sprite.Sprite):
     def get_state(self):
         return self.fsm.current_state
     
-    def move (self, x=0, y=0):
-        if self.rect.centerx <= x:
-            self.rect.centerx += 5
-        elif self.rect.centerx >= x:
-            self.rect.centerx -= 5
+    def move (self):
+        x = self.game.last_clickedx
+        y = self.game.last_clickedy
+        if self.rect.x <= x:
+            self.rect.x += 5
+        elif self.rect.x >= x:
+            self.rect.x -= 5
 
-        if self.rect.centery <= y:
-            self.rect.centery += 5
-        elif self.rect.centery >= y:
-            self.rect.centery -= 5
+        if self.rect.y <= y:
+            self.rect.y += 5
+        elif self.rect.y >= y:
+            self.rect.y -= 5
 
-    def brush_hair():
-        # let time pass
+    def brush_hair(self):
+        pass
+
+    def lose(self):
+        pass
+
+    def win(self):
         pass
      
     def update(self, input = None):
+        print(input, self.fsm.current_state)
         self.fsm.process(input)
         # make sure to change image based on different conditions
     

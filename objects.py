@@ -9,13 +9,14 @@ class Object(pygame.sprite.Sprite):
             self.image = image
 
             # Load initial image
+            self.image = pygame.transform.scale(self.image, (115, 115))
             self.rect = self.image.get_rect()
 
             # Set rectangle
             self.width = self.image.get_width()
             self.height = self.image.get_height()
-            self.rect.centerx = x
-            self.rect.centery = y
+            self.rect.x = x
+            self.rect.y = y
 
     def draw(self, screen):
-        screen.blit(self.image, (self.rect.x , self.rect.y))
+        screen.blit(self.image, (self.rect.x, self.rect.y))
