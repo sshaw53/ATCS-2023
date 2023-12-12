@@ -65,14 +65,14 @@ class GameBot(pygame.sprite.Sprite):
     def move(self):
         x = self.game.last_clickedx
         y = self.game.last_clickedy
-        if self.rect.x <= x:
+        if self.rect.x < x:
             self.rect.x += 3
-        elif self.rect.x >= x:
+        elif self.rect.x > x:
             self.rect.x -= 3
 
-        if self.rect.y <= y:
+        if self.rect.y < y and self.rect.y + self.height < 540:
             self.rect.y += 3
-        elif self.rect.y >= y:
+        elif self.rect.y > y:
             self.rect.y -= 3
 
     def brush_hair(self):

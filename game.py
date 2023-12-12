@@ -144,6 +144,10 @@ class Game:
             
                 if self.player.winner == True:
                     end_text = font.render(f"YOU WON!!!", True, (0, 0, 0))
+                    if self.player.indx < 3:
+                        font = pygame.font.Font(None, 30)
+                        other_end_text = font.render(f"you look a little messy though...", True, (0, 0, 0))
+                        self.screen.blit(other_end_text, (350, 300))
                 else:
                     end_text = font.render(f"YOU LOST :(", True, (0, 0, 0))
             
